@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lecture 09 · Stateful &amp; Stateless Widgets + Navigation</title>
+  <meta name="description" content="Mobile App Development with Flutter, Lecture 09: Learn when a widget needs to remember data, update the screen with setState(), and move from the login page to a Home page with Navigator.push and back with Navigator.pop.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Sora:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="flutter-logo" viewBox="0 0 166 210">
+    <path fill="#44D1FD" d="M10 101 100 11h56L38 129z"/>
+    <path fill="#1FBCFD" d="M51 150 100 102h56l-77 76z"/>
+    <path fill="#08589C" d="M79 178 107 150l49 49h-56z"/>
+  </symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 3v12"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-windows" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-laptop" viewBox="0 0 24 24"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9"/><path d="M2 19.5 4 16h16l2 3.5a1 1 0 0 1-.9 1.5H2.9a1 1 0 0 1-.9-1.5z"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/><path d="M5 3v4M3 5h4M19 17v4M17 19h4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+  <symbol id="i-disk" viewBox="0 0 24 24"><path d="M22 12H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/><path d="M6 16h.01M10 16h.01"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.6a11 11 0 0 1 14 0"/><path d="M1.4 9a16 16 0 0 1 21.2 0"/><path d="M8.5 16.1a6 6 0 0 1 7 0"/><path d="M12 20h.01"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="m7.5 4.3 9 5.1"/><path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><path d="M12 19h8"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-mouse" viewBox="0 0 24 24"><path d="m4 4 7 17 2.5-7.5L21 11z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-chrome" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M21.2 8H12M3.9 6.1 8.5 14M10.9 21.9l4.6-7.9"/></symbol>
+  <symbol id="i-cable" viewBox="0 0 24 24"><path d="M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v2"/><path d="M19 15V6.5a3.5 3.5 0 0 0-7 0v11a3.5 3.5 0 0 1-7 0V9"/><path d="M3 9V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4z"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7c-1.5-1.3-4.5-1.6-6 .5-1.6 2.3-1 6.6 1.3 9.9 1 1.4 2 2.6 3.2 2.5.9 0 1.2-.6 1.5-.6s.6.6 1.5.6c1.2.1 2.2-1.1 3.2-2.5 2.3-3.3 2.9-7.6 1.3-9.9-1.5-2.1-4.5-1.8-6-.5z"/><path d="M12 7c0-2 1-3.5 3-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2a2 2 0 0 0-1.5 3.3c.5.6.3 1.7-.5 2.2-.6.3-1.3.5-2 .5z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10.5" r="1"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.3l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.9 1 6.7 2.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
+  <symbol id="i-log-in" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><path d="M15 12H3"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
+  <symbol id="i-toggle" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="6"/><circle cx="16" cy="12" r="2"/></symbol>
+</svg>
+
+<div class="progress" aria-hidden="true"><span></span></div>
+
+<main class="deck">
+
+<!-- 01 · Title -->
+<section class="slide">
+  <div class="canvas"><div class="frame frame--title">
+    <div class="stagger">
+      <p class="kicker">Lecture 09 · Mobile App Development</p>
+      <h1 class="hero">Stateful &amp; Stateless<br><span class="grad-text">Widgets + Navigation</span></h1>
+      <p class="lead lead--hero">Make your app remember things and move between screens.</p>
+      <div class="chips">
+        <span class="chip"><span class="avatar">MI</span>Eng. Monther Ibrahim</span>
+        <span class="chip"><span class="avatar">M</span>Muhammad, M.Sc.</span>
+        <span class="chip">Fall 2026</span>
+      </div>
+      <p class="keys"><kbd>→</kbd> next &nbsp;·&nbsp; <kbd>F</kbd> fullscreen &nbsp;·&nbsp; <kbd>N</kbd> notes &nbsp;·&nbsp; <kbd>T</kbd> theme</p>
+    </div>
+    <div class="title-right" aria-hidden="true" style="display:flex; align-items:center; justify-content:center; gap:1cqw;">
+      <div class="logo-glow" style="left:12%; top:10%;"></div>
+      <div class="ph" style="--pw:13cqw;">
+        <div class="ph__scr"><div class="ph__island"></div>
+          <div class="col" style="gap:.75em; padding-top:2.6em;">
+            <div style="display:grid; place-items:center;"><svg class="logo" style="width:3em; height:3.8em;"><use href="#flutter-logo"/></svg></div>
+            <div class="m-title" style="text-align:center;">Welcome back</div>
+            <div class="m-sub" style="text-align:center;">Log in to continue</div>
+            <div class="m-field" style="margin-top:.5em;"><svg class="ico"><use href="#i-mail"/></svg>ali@email.ly</div>
+            <div class="m-field"><svg class="ico"><use href="#i-lock"/></svg>••••••••</div>
+            <div class="m-btn m-btn--text" style="align-self:flex-end; height:2em;">Forgot password?</div>
+            <div class="m-btn m-btn--fill is-wide">Login</div>
+            <div class="rowx" style="justify-content:center; font-size:.82em; gap:.25em;"><span>Don't have an account?</span><b style="color:#6750A4;">Sign up</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-mid" style="position:relative; gap:.4cqw;"><span class="badge">Login</span><svg class="ico"><use href="#i-arrow-right"/></svg></div>
+      <div class="ph" style="--pw:13cqw;">
+        <div class="ph__scr"><div class="ph__island"></div>
+          <div class="appbar"><svg class="ico ico-m" style="--ic:#1D1B20;"><use href="#i-arrow-left"/></svg>Home</div>
+          <div class="col" style="gap:.75em; padding-top:2em;">
+            <div style="display:grid; place-items:center;"><svg class="ico ico-m" style="width:4.4em; height:4.4em; --ic:#1D1B20;"><use href="#i-hand"/></svg></div>
+            <div class="m-title" style="text-align:center;">Welcome!</div>
+            <div style="text-align:center; font-size:.88em;">You are logged in as ali@email.ly</div>
+            <div class="m-btn m-btn--fill is-wide" style="margin-top:1.4em;">Logout</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+  <aside class="notes"><p>Today our login page stops being a picture and starts to behave like an app: it remembers what you type and it opens a second screen.</p></aside>
+</section>
+
+<!-- 02 · Learning objectives -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Today</p>
+      <h2 class="title">Learning objectives</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1.25fr .75fr; grid-template-rows: 1fr auto; gap:1.6cqw;">
+      <article class="card card--hl">
+        <h3>By the end of today you can</h3>
+        <ul class="checklist stagger" style="gap:1.9cqw; margin-top:2cqw;">
+          <li><span>Tell stateless and stateful widgets apart, and pick the right one</span></li>
+          <li><span>Write a <code>StatefulWidget</code> and change the screen with <code>setState()</code></span></li>
+          <li><span>Know why the screen does not change without <code>setState()</code></span></li>
+          <li><span>Move between screens with <code>Navigator.push</code> and <code>Navigator.pop</code></span></li>
+          <li><span>Send data to the next screen through its constructor</span></li>
+        </ul>
+      </article>
+        <article class="card">
+          <h3>New words today</h3>
+          <div class="defs stagger" style="margin-top:1.8cqw; gap:1.6cqw;">
+            <div class="def"><code>state</code><span>the data a widget remembers <b>right now</b></span></div>
+            <div class="def"><code>setState()</code><span>"I changed something, draw me again"</span></div>
+            <div class="def"><code>route</code><span>one screen of the app</span></div>
+            <div class="def"><code>Navigator</code><span>keeps the stack of screens</span></div>
+          </div>
+        </article>
+        <div class="callout callout--ok goal" style="grid-column:1 / -1;"><svg class="ico"><use href="#i-target"/></svg><div><b>Goal:</b> Login opens a Home page that shows the email you typed.</div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Read the five goals and come back to this slide at the end to tick them off together.</p></aside>
+</section>
+
+<!-- 03 · Where we left off -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Recap · Lecture 08</p>
+      <h2 class="title">Where we left off</h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr; gap: 3.5cqw; align-items:center;">
+      <div style="display:flex; align-items:center; gap:1.4cqw;">
+        <div class="ph" style="--pw:14cqw;">
+          <div class="ph__scr"><div class="ph__island"></div>
+            <div class="col" style="gap:.75em; padding-top:2.6em;">
+              <div style="display:grid; place-items:center;"><svg class="logo" style="width:3em; height:3.8em;"><use href="#flutter-logo"/></svg></div>
+              <div class="m-title" style="text-align:center;">Welcome back</div>
+              <div class="m-sub" style="text-align:center;">Log in to continue</div>
+              <div class="m-field" style="margin-top:.5em;"><svg class="ico"><use href="#i-mail"/></svg>ali@email.ly</div>
+              <div class="m-field"><svg class="ico"><use href="#i-lock"/></svg>••••••••</div>
+              <div class="m-btn m-btn--text" style="align-self:flex-end; height:2em;">Forgot password?</div>
+              <div class="m-btn m-btn--fill is-wide">Login</div>
+            </div>
+            <div class="snack">Logging in…</div>
+          </div>
+        </div>
+        <div class="side stagger" style="width:18cqw;">
+          <div class="callout callout--warn"><svg class="ico"><use href="#i-message"/></svg><div>"Tap <b>Login</b> → only a SnackBar."</div></div>
+          <div class="callout callout--warn"><svg class="ico"><use href="#i-message"/></svg><div>"I forget the email as soon as you type it."</div></div>
+        </div>
+      </div>
+      <div class="side" style="gap:2.4cqw;">
+        <span class="badge" style="justify-self:start;">Today's plan</span>
+        <div class="journey stagger" style="grid-template-columns: repeat(4, 1fr); gap:1cqw;">
+          <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-layers"/></svg><span class="stop__n">1</span></div><h3>Two kinds</h3><p>of widgets: stateless and stateful</p></div>
+          <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-refresh"/></svg><span class="stop__n">2</span></div><h3><code>setState()</code></h3><p>change what is on the screen</p></div>
+          <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-arrow-right"/></svg><span class="stop__n">3</span></div><h3>Navigation</h3><p>move between screens</p></div>
+          <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-log-in"/></svg><span class="stop__n">4</span></div><h3>Build</h3><p>Login → Home, with the email</p></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Open the Lecture 8 app and run it. Type an email, tap Login: nothing really happens. By the end of today, Login opens a Home page that shows the email you typed.</p></aside>
+</section>
+
+<!-- 04 · Two kinds of widgets -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Two kinds</p>
+      <h2 class="title">Two kinds of widgets</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto 1fr; grid-template-rows: auto auto; align-content:start; gap: 1.8cqw 1.6cqw;">
+      <article class="card" style="display:grid; gap:1.2cqw; align-content:start;">
+        <div class="poster poster--still" style="width:100%; height:11cqw; font-size:2.6cqw;"><div>BOOK FAIR<small style="display:block; margin-top:.5cqw; font:500 1.1cqw/1.4 var(--font-body);">Friday · 6 PM · printed once</small></div></div>
+        <div style="display:flex; align-items:center; gap:1cqw;"><h3><code style="font-size:1.9cqw;">StatelessWidget</code></h3><span class="badge">a printed poster</span></div>
+        <p style="font-size:1.5cqw;">Shows the data it is given. It <b>never changes by itself</b>.</p>
+        <div class="example-list"><span class="path">Text</span><span class="path">Icon</span><span class="path">AppButton</span></div>
+      </article>
+      <div class="vs"><b style="font:700 1.7cqw/1 var(--font-head); color:var(--faint);">vs</b></div>
+      <article class="card" style="display:grid; gap:1.2cqw; align-content:start;">
+        <div class="poster poster--live" style="width:100%; height:11cqw; border:1px solid var(--brd-strong);"><div style="display:flex; align-items:center; gap:2.4cqw;"><small style="font:600 1cqw/1 var(--font-body); letter-spacing:.14em; color:#8C9BB3;">HOME</small>2 : 1<small style="font:600 1cqw/1 var(--font-body); letter-spacing:.14em; color:#8C9BB3;">AWAY</small></div></div>
+        <div style="display:flex; align-items:center; gap:1cqw;"><h3><code style="font-size:1.9cqw;">StatefulWidget</code></h3><span class="badge badge--ok">a scoreboard</span></div>
+        <p style="font-size:1.5cqw;">Has data that <b>can change</b> while the app is running.</p>
+        <div class="example-list"><span class="path">TextField</span><span class="path">Switch</span><span class="path">a counter</span></div>
+      </article>
+      <div class="callout callout--info" style="grid-column:1 / -1; font-size:1.4cqw; padding:1.3cqw 1.6cqw;"><svg class="ico"><use href="#i-bulb"/></svg><div>New word, <b>state</b>: the data a widget remembers <em>right now</em> (a number, true/false, the typed email).</div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>A poster is printed once. A scoreboard changes every time someone scores. Ask: is a <code>TextField</code> a poster or a scoreboard? (A scoreboard: its text changes as you type.)</p></aside>
+</section>
+
+<!-- 05 · The difference -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Compare</p>
+      <h2 class="title">The difference, and when to use which</h2>
+    </header>
+    <div class="body" style="grid-template-rows: auto auto; align-content:start; gap:1.6cqw;">
+      <table class="tbl" style="font-size:1.6cqw;">
+        <thead><tr><th style="width:30%;"></th><th style="text-transform:none; letter-spacing:0; font:600 1.45cqw/1.2 var(--font-mono); color:var(--text);">StatelessWidget</th><th style="text-transform:none; letter-spacing:0; font:600 1.45cqw/1.2 var(--font-mono); color:var(--text);">StatefulWidget</th></tr></thead>
+        <tbody>
+          <tr><td>Its data</td><td><code>final</code>, set once</td><td>can change</td></tr>
+          <tr><td>Classes you write</td><td>1</td><td>2 (the widget + its <code>State</code>)</td></tr>
+          <tr><td><code>build()</code> runs again when…</td><td>its parent rebuilds</td><td><code>setState()</code> is called (or its parent rebuilds)</td></tr>
+          <tr><td>Examples</td><td><code>Text</code>, <code>Icon</code>, <code>AppButton</code>, <code>HomePage</code></td><td><code>TextField</code>, <code>Switch</code>, counter, <code>LoginPage</code></td></tr>
+        </tbody>
+      </table>
+      <div class="stagger" style="display:grid; grid-template-columns: 1.3fr .7fr; gap:1.4cqw;">
+        <div class="callout callout--info" style="font-size:1.45cqw; padding:1.3cqw 1.6cqw;"><svg class="ico"><use href="#i-target"/></svg><div>Ask one question: <b>"Does something on this widget change while the user is looking at it?"</b> No → <code>StatelessWidget</code> (the default). Yes → <code>StatefulWidget</code>.</div></div>
+        <div class="callout callout--ok" style="font-size:1.45cqw; padding:1.3cqw 1.6cqw;"><svg class="ico"><use href="#i-check-circle"/></svg><div>Start stateless. Switch later if you need to (VS Code can convert it for you, slide 15).</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>"Rebuild" means Flutter calls <code>build()</code> again and draws the result.</p><p>Quick quiz: a page title, a like ❤️, a profile card with a name, a counter, a login form that remembers the email. (Answers: title and profile card are stateless; like, counter and login form are stateful.)</p></aside>
+</section>
+
+<!-- 06 · How a StatelessWidget works -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Stateless</p>
+      <h2 class="title">How a StatelessWidget works</h2>
+    </header>
+    <div class="body walk" style="grid-template-columns: 1.43fr .57fr;">
+      <div class="term code code--lg">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/warmup/greeting.dart</span></div>
+<pre class="hl" data-groups="2,4:g1;6-9:g3;13-14:g2">class Greeting extends StatelessWidget {
+  const Greeting({super.key, required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Hello, $name!', style: const TextStyle(fontSize: 24));
+  }
+}
+
+// Using it:
+const Greeting(name: 'Ali'),
+const Greeting(name: 'محمد'),</pre>
+      </div>
+      <div class="explain">
+        <div class="legend-groups stagger">
+          <div class="lg" style="--c:#13B9FD;"><span class="n">1</span><b>Data comes in</b><span>through the <b>constructor</b>; the fields are <code>final</code>.</span></div>
+          <div class="lg" style="--c:#4ADE80;"><span class="n">2</span><b><code>build()</code> runs</b><span>when the <b>parent</b> rebuilds it, maybe with new data.</span></div>
+          <div class="lg" style="--c:#FFC857;"><span class="n">3</span><b>Each use, its own data</b><span><code>'Ali'</code> and <code>'محمد'</code>: same class, different <code>name</code>.</span></div>
+        </div>
+        <div class="callout callout--warn"><svg class="ico"><use href="#i-lock"/></svg><div>It can <b>never</b> change its own <code>name</code>.</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>This is exactly what we did in Lecture 8 with <code>AppTextField</code>. If you remove <code>final</code>, the analyzer warns: "This class … is marked as '@immutable', but one or more of its instance fields aren't final". Stateless widgets must not change.</p></aside>
+</section>
+
+<!-- 07 · How a StatefulWidget works -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Stateful</p>
+      <h2 class="title">How a StatefulWidget works</h2>
+    </header>
+    <div class="body walk" style="grid-template-columns: 1.2fr .8fr;">
+      <div class="term code code--lg">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/warmup/counter_page.dart</span></div>
+<pre class="hl" data-groups="1-6:g1;8-11:g2">class CounterPage extends StatefulWidget {
+  const CounterPage({super.key});
+
+  @override
+  State&lt;CounterPage&gt; createState() =&gt; _CounterPageState();
+}
+
+class _CounterPageState extends State&lt;CounterPage&gt; {
+  int count = 0;
+  // build() lives here, in the State
+}</pre>
+      </div>
+      <div class="explain">
+        <div class="stagger" style="display:grid; gap:.5cqw;">
+          <article class="card" style="border-left:.4cqw solid #13B9FD; padding:1.1cqw 1.4cqw;">
+            <div style="display:flex; align-items:center; gap:.8cqw;"><code style="font:600 1.3cqw/1.2 var(--font-mono); color:var(--text);">CounterPage</code><span class="badge">the widget</span></div>
+            <p style="font-size:1.2cqw; line-height:1.4; margin-top:.4cqw;">The <b>settings card</b>: small and <code>final</code>. Flutter can throw it away and make a new one.</p>
+          </article>
+          <div style="display:flex; align-items:center; gap:.6cqw; padding-left:2.4cqw; color:var(--sky); font:600 1.15cqw/1 var(--font-mono);"><svg class="ico" style="font-size:1.8cqw; transform:rotate(90deg);"><use href="#i-arrow-right"/></svg>createState()</div>
+          <article class="card" style="border-left:.4cqw solid #FFC857; padding:1.1cqw 1.4cqw;">
+            <div style="display:flex; align-items:center; gap:.8cqw;"><code style="font:600 1.3cqw/1.2 var(--font-mono); color:var(--text);">_CounterPageState</code><span class="badge badge--warm">the State</span></div>
+            <p style="font-size:1.2cqw; line-height:1.4; margin-top:.4cqw;">The <b>memory box</b>: keeps <code>count</code> and has <code>build()</code>.</p>
+          </article>
+        </div>
+        <div class="defs">
+          <div class="def"><code>_name</code><span><code>_</code> at the start of a name = <b>private</b>: only this file can use it.</span></div>
+          <div class="def"><code>=&gt;</code><span>A short way to write <code>{ return …; }</code></span></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Type <code>stful</code> in VS Code and press Enter to get this skeleton. The important idea: the <b>State object</b> survives rebuilds, so it is the right place to keep data that changes.</p></aside>
+</section>
+
+<!-- 08 · setState(): the counter -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">setState()</p>
+      <h2 class="title"><code>setState()</code>: the counter</h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr auto; gap: 2cqw; align-items:start;">
+      <div class="side">
+        <div class="term code code--sm">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/warmup/counter_page.dart</span></div>
+<pre class="hl" data-hl="2">class _CounterPageState extends State&lt;CounterPage&gt; {
+  int count = 0;</pre>
+        </div>
+        <div class="term code code--sm">
+          <div class="term__bar"><i></i><i></i><i></i><span>inside build() · Scaffold( … )</span></div>
+<pre class="hl" data-hl="1,4-6">body: Center(child: Text('$count', style: const TextStyle(fontSize: 64))),
+floatingActionButton: FloatingActionButton(
+  onPressed: () {
+    setState(() {
+      count++;
+    });
+  },
+  child: const Icon(Icons.add),
+),</pre>
+        </div>
+      </div>
+      <div class="explain stagger">
+        <ol class="steps" style="font-size:1.3cqw; line-height:1.45; gap:1.1cqw;">
+          <li><span><code>count</code> lives in the State; <code>count++</code> adds 1.</span></li>
+          <li><span><code>setState()</code> means: <b>"I changed something, please draw me again."</b></span></li>
+          <li><span>Flutter calls <code>build()</code> again, and the new number appears.</span></li>
+        </ol>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-bulb"/></svg><div><code>FloatingActionButton</code> is the round button that floats in the bottom-right corner.</div></div>
+      </div>
+      <div class="ph" style="--pw:13.5cqw;">
+        <div class="ph__scr"><div class="ph__island"></div>
+          <div class="appbar">Counter</div>
+          <div class="pbody"><span style="font-size:4.6em; line-height:1;">3</span></div>
+          <div class="fab" style="font-size:1em; width:3.6em; height:3.6em; right:1.2em; bottom:1.4em; border-radius:1.1em;"><svg class="ico" style="width:1.6em; height:1.6em;"><use href="#i-plus"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Remember the starter app from Lecture 2? This is the same idea, now we understand it. <code>FloatingActionButton</code> is the round button that floats in the bottom-right corner.</p><p>Live: put <code>home: const CounterPage()</code> in <code>MyApp</code> and tap a few times.</p></aside>
+</section>
+
+<!-- 09 · Without setState -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Break it on purpose</p>
+      <h2 class="title">Without setState: the screen doesn't know</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto; gap: 2.4cqw; align-items:start;">
+      <div class="side">
+        <div class="card" style="padding:1.1cqw 1.4cqw;">
+          <span class="badge badge--ok">With setState</span>
+          <div style="display:flex; align-items:center; flex-wrap:wrap; gap:.7cqw; margin-top:1cqw;">
+            <span class="nd">Tap</span><svg class="ico" style="font-size:1.5cqw; color:var(--sky);"><use href="#i-arrow-right"/></svg>
+            <span class="nd nd--hl">setState()</span><svg class="ico" style="font-size:1.5cqw; color:var(--sky);"><use href="#i-arrow-right"/></svg>
+            <span class="nd">build() runs again</span><svg class="ico" style="font-size:1.5cqw; color:var(--sky);"><use href="#i-arrow-right"/></svg>
+            <span class="nd">screen shows 1</span>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.4cqw;">
+          <div class="side" style="gap:.7cqw;">
+            <span class="badge badge--warm" style="justify-self:start;">Same button, no setState</span>
+            <div class="term code">
+              <div class="term__bar"><i></i><i></i><i></i><span>lib/warmup/counter_page.dart</span></div>
+<pre class="hl" data-hl="2-3">onPressed: () {
+  count++;
+  debugPrint('count is $count');
+},</pre>
+            </div>
+          </div>
+          <div class="side" style="gap:.7cqw;">
+            <span class="badge" style="justify-self:start;">Debug Console</span>
+            <div class="term">
+              <div class="term__bar"><i></i><i></i><i></i><span>DEBUG CONSOLE</span></div>
+<pre><span class="t-ok">count is 1</span>
+<span class="t-ok">count is 2</span>
+<span class="t-ok">count is 3</span>
+<span class="t-dim">…</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>The value changed, but <b>nobody told Flutter</b> to redraw. The phone still shows <b>0</b>.</div></div>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div><b>Rule:</b> change a State field → do it inside <code>setState(() { … })</code>.</div></div>
+      </div>
+      <div class="ph" style="--pw:12.5cqw;">
+        <div class="ph__scr"><div class="ph__island"></div>
+          <div class="appbar">Counter</div>
+          <div class="pbody"><div class="is-tag" data-tag="still 0" style="font-size:1.4em; padding:.2em .8em;"><span style="font-size:3.3em; line-height:1;">0</span></div></div>
+          <div class="fab is-tag" data-tag="tapped 3×" style="font-size:1.4em; width:2.6em; height:2.6em; right:.85em; bottom:1em; border-radius:.8em; position:absolute;"><svg class="ico" style="width:1.15em; height:1.15em;"><use href="#i-plus"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Do this live: delete <code>setState</code>, tap three times, show the console and the screen side by side. <code>debugPrint</code> writes a line to the Debug Console; it is our window into the app. Then put <code>setState</code> back.</p></aside>
+</section>
+
+<!-- 10 · A like button -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">true / false</p>
+      <h2 class="title">A like button (true / false)</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1.12fr .68fr auto; gap: 2cqw; align-items:start;">
+      <div class="term code">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/warmup/like_button.dart</span><span class="grow"></span><span>_LikeButtonState</span></div>
+<pre class="hl" data-hl="1,7-8,12">bool isLiked = false;
+@override
+Widget build(BuildContext context) {
+  return IconButton(
+    iconSize: 48,
+    icon: Icon(
+      isLiked ? Icons.favorite : Icons.favorite_border,
+      color: isLiked ? Colors.red : Colors.grey,
+    ),
+    onPressed: () {
+      setState(() {
+        isLiked = !isLiked;
+      });
+    },
+  );</pre>
+      </div>
+      <div class="explain stagger">
+        <div class="defs">
+          <div class="def"><code>bool</code><span>holds <code>true</code> or <code>false</code></span></div>
+          <div class="def"><code>a ? b : c</code><span>"if <code>a</code>, use <code>b</code>, otherwise <code>c</code>"</span></div>
+          <div class="def"><code>!isLiked</code><span>"the opposite": true becomes false, false becomes true</span></div>
+        </div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-layers"/></svg><div>On one page: two <code>Greeting</code>s that never change, and a heart that does.</div></div>
+      </div>
+      <div class="ph-col">
+        <div class="ph" style="--pw:12.5cqw;">
+          <div class="ph__scr"><div class="ph__island"></div>
+            <div class="appbar">Playground</div>
+            <div class="pbody" style="align-content:center; gap:1.4em;">
+              <div class="is-tag" data-tag="stateless" style="font-size:1.3em; display:grid; gap:.15em; padding:.25em .45em;">
+                <div style="font-size:1.04em;">Hello, Ali!</div>
+                <div style="font-size:1.04em;">Hello, محمد!</div>
+              </div>
+              <div class="is-tag" data-tag="stateful" style="font-size:1.3em; display:grid; place-items:center; padding:.25em;"><svg class="ico" style="width:2.1em; height:2.1em; color:#F44336; fill:#F44336;"><use href="#i-heart"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <p class="ph-cap">Tap: grey <b>↔</b> red</p>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>This is the <code>_LikeButtonState</code> class from the complete example. Show it in a small "Playground" page with two <code>Greeting</code>s above it: the greetings never change, the heart does. One stateless, one stateful, side by side.</p></aside>
+</section>
+
+<!-- 11 · Navigation: screens on a stack -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Navigation</p>
+      <h2 class="title">Navigation: screens on a stack</h2>
+    </header>
+    <div class="body" style="grid-template-rows: auto auto; align-content:start; gap:2.4cqw;">
+      <div class="stagger" style="display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items:center; gap:1.4cqw;">
+        <div class="center-stack">
+          <div style="height:12.5cqw; width:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:.6cqw;">
+            <div class="nd nd--hl" style="width:21cqw; padding:1.2cqw; font-size:1.45cqw;">LoginPage<small><svg class="ico" style="vertical-align:-.15em;"><use href="#i-eye"/></svg> on screen</small></div>
+          </div>
+          <p class="ph-cap" style="margin-top:.4cqw;"><b>1.</b> The app starts</p>
+        </div>
+        <div class="arrow-mid" style="gap:.3cqw; font-size:2.2cqw;"><code style="font:600 1.15cqw/1 var(--font-mono);">push</code><svg class="ico"><use href="#i-arrow-right"/></svg></div>
+        <div class="center-stack">
+          <div style="height:12.5cqw; width:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:.6cqw;">
+            <div class="nd nd--hl" style="width:21cqw; padding:1.2cqw; font-size:1.45cqw;">HomePage<small><svg class="ico" style="vertical-align:-.15em;"><use href="#i-eye"/></svg> on screen</small></div>
+            <div class="nd nd--root" style="width:21cqw; padding:1.2cqw; font-size:1.45cqw;">LoginPage<small>still there, underneath</small></div>
+          </div>
+          <p class="ph-cap" style="margin-top:.4cqw;"><b>2.</b> A new plate on top</p>
+        </div>
+        <div class="arrow-mid" style="gap:.3cqw; font-size:2.2cqw;"><code style="font:600 1.15cqw/1 var(--font-mono);">pop</code><svg class="ico"><use href="#i-arrow-right"/></svg></div>
+        <div class="center-stack">
+          <div style="height:12.5cqw; width:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:.6cqw;">
+            <div class="nd" style="width:21cqw; padding:1.2cqw; font-size:1.45cqw; opacity:.4; border-style:dashed; box-shadow:none;">HomePage<small>taken off</small></div>
+            <div class="nd nd--hl" style="width:21cqw; padding:1.2cqw; font-size:1.45cqw;">LoginPage<small><svg class="ico" style="vertical-align:-.15em;"><use href="#i-eye"/></svg> on screen again</small></div>
+          </div>
+          <p class="ph-cap" style="margin-top:.4cqw;"><b>3.</b> The top plate is removed</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2cqw 3cqw;">
+        <div class="defs stagger">
+          <div class="def" style="font-size:1.45cqw;"><code>route</code><span>Each screen is called a <b>route</b>.</span></div>
+          <div class="def" style="font-size:1.45cqw;"><code>Navigator</code><span>Manages the stack of routes.</span></div>
+        </div>
+        <div class="defs stagger">
+          <div class="def" style="font-size:1.45cqw;"><code>push</code><span>Put a new screen on top.</span></div>
+          <div class="def" style="font-size:1.45cqw;"><code>pop</code><span>Take the top screen off.</span></div>
+        </div>
+        <div class="callout callout--info" style="grid-column:1 / -1; font-size:1.35cqw; padding:1.2cqw 1.5cqw;"><svg class="ico"><use href="#i-eye"/></svg><div>The user always sees the <b>top</b> plate.</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Act it out with two sheets of paper on the desk. Push the "Home" sheet on top of "Login", then pop it off. The Login sheet was there the whole time: it was never destroyed.</p></aside>
+</section>
+
+<!-- 12 · Navigator.push -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Navigation · push</p>
+      <h2 class="title"><code>Navigator.push</code>: open a new screen</h2>
+    </header>
+    <div class="body walk">
+      <div class="term code code--lg">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/login_page.dart</span><span class="grow"></span><span>the Login button</span></div>
+<pre class="hl" data-hl="4-9">AppButton(
+  text: 'Login',
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =&gt; HomePage(email: email),
+      ),
+    );
+  },
+),</pre>
+      </div>
+      <div class="explain stagger">
+        <div class="defs">
+          <div class="def"><code>context</code><span>Where we are in the widget tree, so Flutter finds the Navigator.</span></div>
+          <div class="def"><code>MaterialPageRoute</code><span>A route with the normal Android / iOS page animation.</span></div>
+          <div class="def"><code>builder</code><span>A function that builds the new screen.</span></div>
+        </div>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-arrow-right"/></svg><div>The data travels in the <b>constructor</b>: <code>HomePage(email: email)</code>.</div></div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-bulb"/></svg><div>The same way <code>Greeting</code> receives <code>name</code>.</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>This is the exact Login button we will write in a few minutes. <code>email</code> will be a field in the login page's State. Point out: the new page receives the email the same way <code>Greeting</code> receives <code>name</code>.</p></aside>
+</section>
+
+<!-- 13 · Navigator.pop and the back arrow -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Navigation · pop</p>
+      <h2 class="title"><code>Navigator.pop</code> and the back arrow</h2>
+    </header>
+    <div class="body" style="grid-template-columns: .85fr 1fr auto; gap: 2cqw; align-items:start;">
+      <div class="side">
+        <div class="term code code--lg">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/home_page.dart</span></div>
+<pre class="hl" data-hl="4">AppButton(
+  text: 'Logout',
+  onPressed: () {
+    Navigator.pop(context);
+  },
+),</pre>
+        </div>
+        <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>Never pop the <b>very first</b> screen: there is nothing below it, so you get a black screen.</div></div>
+      </div>
+      <div class="side stagger">
+        <div class="card fact"><span class="itile"><svg class="ico"><use href="#i-layers"/></svg></span><div><h3>pop</h3><p>Removes the top screen; the screen below appears again.</p></div></div>
+        <div class="card fact"><span class="itile"><svg class="ico"><use href="#i-arrow-left"/></svg></span><div><h3>AppBar ←</h3><p>Added <b>automatically</b> when there is a screen below. Tapping it also pops.</p></div></div>
+        <div class="card fact"><span class="itile"><svg class="ico"><use href="#i-phone"/></svg></span><div><h3>Back button</h3><p>The Android back button / back gesture pops too.</p></div></div>
+      </div>
+      <div class="ph-col">
+      <div class="ph" style="--pw:13cqw;">
+        <div class="ph__scr"><div class="ph__island"></div>
+          <div class="appbar"><span style="display:grid; place-items:center; width:2.1em; height:2.1em; margin-left:-.4em; border-radius:50%; border:.16em solid #FFB300; box-shadow:0 0 0 .3em rgba(255, 179, 0, .25);"><svg class="ico ico-m" style="--ic:#1D1B20; width:1.25em; height:1.25em;"><use href="#i-arrow-left"/></svg></span>Home</div>
+          <div class="col" style="gap:.75em; padding-top:2em;">
+            <div style="display:grid; place-items:center;"><svg class="ico ico-m" style="width:4.4em; height:4.4em; --ic:#1D1B20;"><use href="#i-hand"/></svg></div>
+            <div class="m-title" style="text-align:center;">Welcome!</div>
+            <div style="text-align:center; font-size:.88em;">You are logged in as ali@email.ly</div>
+            <div class="m-btn m-btn--fill is-wide" style="margin-top:1.4em;">Logout</div>
+          </div>
+        </div>
+      </div>
+      <p class="ph-cap"><b>←</b> added for you</p>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>We never wrote code for the back arrow: Flutter adds it because the Navigator knows there is a page underneath. Never pop the very first screen: there is nothing below it, so you get a black screen.</p></aside>
+</section>
+
+<!-- 14 · Build it 1/3 -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Build it · 1 of 3</p>
+      <h2 class="title">AppTextField tells us what you type</h2>
+    </header>
+    <div class="body walk" style="grid-template-columns: 1.14fr .86fr;">
+      <div class="term code code--lg">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/widgets/app_text_field.dart</span><span class="grow"></span><span>three new lines</span></div>
+<pre class="hl" data-hl="6,9,14">const AppTextField({
+  super.key,
+  required this.label,
+  required this.icon,
+  this.isPassword = false,
+  this.onChanged, // new
+});
+
+final ValueChanged&lt;String&gt;? onChanged; // new
+
+// inside build():
+return TextField(
+  obscureText: isPassword,
+  onChanged: onChanged, // new: hand it to the TextField</pre>
+      </div>
+      <div class="explain stagger">
+        <div class="defs">
+          <div class="def"><code>ValueChanged&lt;String&gt;</code><span>The type of a function like <code style="white-space:nowrap;">(value) { }</code> that receives a String.</span></div>
+          <div class="def"><code>?</code><span>Optional, it can be empty (<code>null</code>). The Password field does not need it.</span></div>
+        </div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-bulb"/></svg><div>Like <code>VoidCallback</code> from Lecture 8, but with an input.</div></div>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div>Not <code>required</code>, so every place that already uses <code>AppTextField</code> keeps working.</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Because <code>onChanged</code> is not <code>required</code>, every place that already uses <code>AppTextField</code> keeps working. This is the same pattern as <code>AppButton</code>'s <code>onPressed</code>: the widget receives a function and passes it on.</p></aside>
+</section>
+
+<!-- 15 · Build it 2/3 -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Build it · 2 of 3</p>
+      <h2 class="title">LoginPage remembers the email</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr .8fr auto; gap: 2cqw; align-items:start;">
+      <div class="term code">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/login_page.dart</span></div>
+<pre class="hl" data-hl="1-2,10-14">class _LoginPageState extends State&lt;LoginPage&gt; {
+  String email = '';
+
+  @override
+  Widget build(BuildContext context) {
+    // … same Scaffold as Lecture 8 …
+          AppTextField(
+            label: 'Email',
+            icon: Icons.email,
+            onChanged: (value) {
+              setState(() {
+                email = value;
+              });
+            },
+          ),</pre>
+      </div>
+      <div class="explain stagger">
+        <ol class="steps steps--tight" style="font-size:1.22cqw; line-height:1.45; gap:.9cqw;">
+          <li><span>Move <code>LoginPage</code> to <code>lib/login_page.dart</code>, click its name, press <kbd>Ctrl</kbd> + <kbd>.</kbd> (Mac: <kbd>⌘</kbd> + <kbd>.</kbd>) → <b>Convert to StatefulWidget</b>.</span></li>
+          <li><span>Add the field <code>String email = '';</code> to the State.</span></li>
+          <li><span>Give the Email field an <code>onChanged</code>, and remove its <code>const</code>.</span></li>
+          <li><span>The Login button gets the <code>Navigator.push</code> code from slide 12.</span></li>
+        </ol>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-bulb"/></svg><div>The email lives in the <b>State</b>, so it is still there when Login is tapped.</div></div>
+      </div>
+      <div class="ph-col">
+      <div class="ph" style="--pw:12.5cqw;">
+        <div class="ph__scr"><div class="ph__island"></div>
+          <div class="col" style="gap:.75em; padding-top:2.6em;">
+            <div style="display:grid; place-items:center;"><svg class="logo" style="width:3em; height:3.8em;"><use href="#flutter-logo"/></svg></div>
+            <div class="m-title" style="text-align:center;">Welcome back</div>
+            <div class="m-sub" style="text-align:center;">Log in to continue</div>
+            <div class="m-field is-focus" style="margin-top:.5em;"><span class="lbl">Email</span><svg class="ico"><use href="#i-mail"/></svg>ali@email.ly</div>
+            <div class="m-field"><svg class="ico"><use href="#i-lock"/></svg>Password</div>
+            <div class="m-btn m-btn--text" style="align-self:flex-end; height:2em;">Forgot password?</div>
+            <div class="m-btn m-btn--fill is-wide">Login</div>
+            <div class="rowx" style="justify-content:center; font-size:.82em; gap:.25em;"><span>Don't have an account?</span><b style="color:#6750A4;">Sign up</b></div>
+          </div>
+        </div>
+      </div>
+      <p class="ph-cap" style="font-size:1.05cqw;"><code style="color:var(--sky);">email = 'ali@email.ly'</code></p>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p><code>const</code> must go because the field now holds a function written here. The email lives in the State, so it is still there when the Login button is tapped.</p></aside>
+</section>
+
+<!-- 16 · Build it 3/3 -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Build it · 3 of 3</p>
+      <h2 class="title">The Home page</h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr; gap: 2cqw; align-items:start;">
+      <div class="side">
+        <div class="term code code--sm">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/home_page.dart</span></div>
+<pre class="hl" data-hl="1-4,11" style="font-size:.95cqw;">class HomePage extends StatelessWidget {
+  const HomePage({super.key, required this.email});
+
+  final String email;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home')),
+      // … icon and 'Welcome!' title …
+            Text('You are logged in as $email', textAlign: TextAlign.center),
+      // … the Logout AppButton from slide 13 …</pre>
+        </div>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div><code>HomePage</code> is <b>stateless</b>: it only shows the email it receives.</div></div>
+      </div>
+      <div class="phones stagger" style="gap:.5cqw; align-items:flex-start;">
+        <div class="ph-col">
+          <div class="ph" style="--pw:11cqw;">
+            <div class="ph__scr"><div class="ph__island"></div>
+              <div class="col" style="gap:.75em; padding-top:2.6em;">
+                <div style="display:grid; place-items:center;"><svg class="logo" style="width:3em; height:3.8em;"><use href="#flutter-logo"/></svg></div>
+                <div class="m-title" style="text-align:center;">Welcome back</div>
+                <div class="m-sub" style="text-align:center;">Log in to continue</div>
+                <div class="m-field is-focus" style="margin-top:.5em;"><span class="lbl">Email</span><svg class="ico"><use href="#i-mail"/></svg>ali@email.ly</div>
+                <div class="m-field"><svg class="ico"><use href="#i-lock"/></svg>Password</div>
+                <div class="m-btn m-btn--text" style="align-self:flex-end; height:2em;">Forgot password?</div>
+                <div class="m-btn m-btn--fill is-wide">Login</div>
+              </div>
+            </div>
+          </div>
+          <p class="ph-cap"><b>1</b> Type the email</p>
+        </div>
+        <div class="arrow-mid" style="font-size:1.6cqw; align-self:center; margin-top:-2cqw;"><svg class="ico"><use href="#i-arrow-right"/></svg></div>
+        <div class="ph-col">
+          <div class="ph" style="--pw:11cqw;">
+            <div class="ph__scr"><div class="ph__island"></div>
+              <div class="col" style="gap:.75em; padding-top:2.6em;">
+                <div style="display:grid; place-items:center;"><svg class="logo" style="width:3em; height:3.8em;"><use href="#flutter-logo"/></svg></div>
+                <div class="m-title" style="text-align:center;">Welcome back</div>
+                <div class="m-sub" style="text-align:center;">Log in to continue</div>
+                <div class="m-field" style="margin-top:.5em;"><svg class="ico"><use href="#i-mail"/></svg>ali@email.ly</div>
+                <div class="m-field"><svg class="ico"><use href="#i-lock"/></svg>Password</div>
+                <div class="m-btn m-btn--text" style="align-self:flex-end; height:2em;">Forgot password?</div>
+                <div class="m-btn m-btn--fill is-wide is-tag" data-tag="tap">Login</div>
+              </div>
+            </div>
+          </div>
+          <p class="ph-cap"><b>2</b> Tap Login</p>
+        </div>
+        <div class="arrow-mid" style="font-size:1.6cqw; align-self:center; margin-top:-2cqw;"><svg class="ico"><use href="#i-arrow-right"/></svg></div>
+        <div class="ph-col">
+          <div class="ph" style="--pw:11cqw;">
+            <div class="ph__scr"><div class="ph__island"></div>
+              <div class="appbar"><svg class="ico ico-m" style="--ic:#1D1B20;"><use href="#i-arrow-left"/></svg>Home</div>
+              <div class="col" style="gap:.75em; padding-top:2em;">
+                <div style="display:grid; place-items:center;"><svg class="ico ico-m" style="width:4.4em; height:4.4em; --ic:#1D1B20;"><use href="#i-hand"/></svg></div>
+                <div class="m-title" style="text-align:center;">Welcome!</div>
+                <div style="text-align:center; font-size:.88em;">You are logged in as ali@email.ly</div>
+                <div class="m-btn m-btn--fill is-wide" style="margin-top:1.4em;">Logout</div>
+              </div>
+            </div>
+          </div>
+          <p class="ph-cap"><b>3</b> Home, with ←</p>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Run the whole flow. Tap Logout: we are back on the login page, and the email is still typed in, because the LoginPage State stayed alive under the Home page (the bottom plate).</p></aside>
+</section>
+
+<!-- 17 · Common mistakes -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Watch out</p>
+      <h2 class="title">Common mistakes</h2>
+    </header>
+    <div class="body probs" style="gap:1.4cqw;">
+      <table class="tbl tbl--probs">
+        <thead><tr><th><svg class="ico"><use href="#i-alert"/></svg>The error or symptom</th><th><svg class="ico"><use href="#i-check-circle"/></svg>The fix</th></tr></thead>
+        <tbody>
+          <tr><td><span class="err">The method 'setState' isn't defined for the type 'CounterPage'.</span></td><td>It is a StatelessWidget. Convert it to a StatefulWidget.</td></tr>
+          <tr><td><span class="muted">Console shows the new value, the screen does not</span></td><td>Wrap the change in <code>setState(() { … });</code></td></tr>
+          <tr><td><span class="err">The named parameter 'email' is required, but there's no corresponding argument.</span></td><td>Pass the data: <code>HomePage(email: email)</code></td></tr>
+          <tr><td><span class="err">The argument type 'HomePage' can't be assigned to the parameter type 'Route&lt;Object?&gt;'.</span></td><td>Wrap the page: <code>MaterialPageRoute(builder: (context) =&gt; HomePage(email: email))</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--info"><svg class="ico"><use href="#i-sparkles"/></svg><div><b>Coming later:</b> <code>Navigator.pushReplacement</code> (go to Home with no way back to Login) and named routes.</div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Make one of these mistakes on purpose and read the red message together. Real apps use <code>pushReplacement</code> after login so "back" does not return to the login form; we will meet it in the Firebase lectures.</p></aside>
+</section>
+
+<!-- 18 · Meme break -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Meme break</p>
+      <h2 class="title">Why didn't the number change?</h2>
+    </header>
+    <div class="body meme-slide">
+      <figure class="meme meme--anakin" style="--mw:36cqw;"><img src="https://i.imgflip.com/5c7lwq.png" alt="Anakin and Padme meme about forgetting setState">
+        <span class="cap cap--impact c1"><span>I changed the counter variable.</span></span>
+        <span class="cap cap--impact c2"><span>And you called setState, right?</span></span>
+        <span class="cap cap--impact c3"><span>…You called setState, right?</span></span></figure>
+      <div class="meme-side stagger">
+        <div class="say"><p>Ask the class: why didn't the number on screen change?</p></div>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div>The variable changed, but Flutter was never told to rebuild. Put the change inside <code>setState(() { … })</code>.</div></div>
+        <p class="meme-link">Make your own: <a href="https://imgflip.com/memegenerator/322841258" target="_blank" rel="noopener">imgflip meme generator</a> · <a href="https://knowyourmeme.com/memes/for-the-better-right" target="_blank" rel="noopener">about this meme</a></p>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Ask the class why the number on screen didn't change (the variable changed, but Flutter was never told to rebuild). Then show the fix: put the change inside <code>setState(() { … })</code>.</p></aside>
+</section>
+
+<!-- 19 · Summary + Questions -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Wrap-up</p>
+      <h2 class="title">Summary + Questions</h2>
+    </header>
+    <div class="body wrap" style="align-items:start;">
+      <article class="card card--hl">
+        <h3>Remember</h3>
+        <ul class="checklist stagger" style="gap:1.8cqw; margin-top:2cqw;">
+          <li><span><b>Stateless</b> = shows what it is given. <b>Stateful</b> = remembers data that can change.</span></li>
+          <li><span>A <code>StatefulWidget</code> = 2 classes; the <b>State</b> keeps the data.</span></li>
+          <li><span>Change a State field inside <code>setState()</code>, or the screen will not update.</span></li>
+          <li><span>Screens sit on a <b>stack</b>: <code>Navigator.push</code> adds, <code>Navigator.pop</code> removes.</span></li>
+          <li><span>Send data to a screen through its <b>constructor</b>.</span></li>
+        </ul>
+      </article>
+      <div class="qa" style="align-self:center;">
+        <div class="qa__big grad-text">Questions?</div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-check-circle"/></svg><div>Back to the <b>learning objectives</b> on slide 2: which ones can you tick off now?</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Go back to the objectives on slide 2 and tick them off with the class.</p></aside>
+</section>
+
+<!-- 20 · Homework -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Practice at home</p>
+      <h2 class="title">Homework</h2>
+    </header>
+    <div class="body stagger" style="grid-template-columns: repeat(3, 1fr); grid-auto-rows: auto; align-content:start; gap:1.4cqw;">
+      <article class="card" style="display:grid; gap:.8cqw; align-content:start;"><div style="display:flex; align-items:center; gap:1cqw;"><span class="itile"><svg class="ico"><use href="#i-refresh"/></svg></span><h3>1 · Counter reset</h3></div><p style="font-size:1.45cqw;">A refresh button in the <code>AppBar</code> sets the count back to 0.</p></article>
+      <article class="card" style="display:grid; gap:.8cqw; align-content:start;"><div style="display:flex; align-items:center; gap:1cqw;"><span class="itile"><svg class="ico"><use href="#i-heart"/></svg></span><h3>2 · Like counter</h3></div><p style="font-size:1.45cqw;">Show the number of likes next to the heart.</p></article>
+      <article class="card" style="display:grid; gap:.8cqw; align-content:start;"><div style="display:flex; align-items:center; gap:1cqw;"><span class="itile"><svg class="ico"><use href="#i-mail"/></svg></span><h3>3 · Empty email</h3></div><p style="font-size:1.45cqw;">Show a SnackBar instead of opening Home.</p></article>
+      <article class="card" style="display:grid; gap:.8cqw; align-content:start;"><div style="display:flex; align-items:center; gap:1cqw;"><span class="itile"><svg class="ico"><use href="#i-user-plus"/></svg></span><h3>4 · Sign up</h3></div><p style="font-size:1.45cqw;">"Sign up" opens your Sign up page; the back arrow returns.</p></article>
+      <article class="card card--hl" style="display:grid; gap:.8cqw; align-content:start;"><div style="display:flex; align-items:center; gap:1cqw;"><span class="itile"><svg class="ico"><use href="#i-eye"/></svg></span><h3>5 · Show password</h3></div><span class="badge badge--warm" style="position:absolute; top:1.2cqw; right:1.2cqw;">Bonus</span><p style="font-size:1.45cqw;">An eye icon that shows / hides the password.</p></article>
+      <div class="callout callout--info" style="align-self:start;"><svg class="ico"><use href="#i-bulb"/></svg><div>Exercise 3 reuses the SnackBar from Lecture 8: <code>ScaffoldMessenger.of(context).showSnackBar(…)</code></div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 09</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Full descriptions are in the homework section of the plan. Exercise 3 reuses the SnackBar from Lecture 8.</p></aside>
+</section>
+
+</main>
+
+<div class="notes-panel" hidden>
+  <h4 class="np-title">Speaker notes</h4>
+  <div class="np-body"></div>
+</div>
+<div class="hint" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>F</kbd> fullscreen · <kbd>N</kbd> notes · <kbd>T</kbd> theme</div>
+
+<script src="js/deck.js"></script>
+</body>
+</html>
